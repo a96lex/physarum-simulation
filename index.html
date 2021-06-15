@@ -10,7 +10,7 @@
   </div>
   <div class="main">
     <div>
-      <div class="settings" onclick="checkActions()">
+      <div class="settings" onclick="checkActions()" onkeydown="checkActions()">
         <h3>Global settings</h3>
         <div>
           <label for="agentGeneration">Agent generation</label>
@@ -18,11 +18,7 @@
         </div>
         <div>
           <label for="agentMovement">Agent movement</label>
-          <input id="agentMovement" type="checkbox" />
-        </div>
-        <div>
-          <label for="agentRotation">Agent rotation</label>
-          <input id="agentRotation" type="checkbox" />
+          <input id="agentMovement" type="checkbox" checked />
         </div>
         <div>
           <label for="deposit">Deposit</label>
@@ -33,10 +29,18 @@
           <input id="diffuse" type="checkbox" />
         </div>
         <div>
+          <label for="agentRotation">Agent rotation</label>
+          <input id="agentRotation" type="checkbox" />
+        </div>
+        <div>
           <label for="decay">Decay</label> <input id="decay" type="checkbox" />
         </div>
       </div>
-      <div class="settings" onclick="checkSettings()">
+      <div
+        class="settings"
+        onclick="checkSettings()"
+        onkeydown="checkSettings()"
+      >
         <h3>Parameters</h3>
         <div>
           <label for="AGENT_COUNT">Agent amount</label>
@@ -57,7 +61,7 @@
             min="0"
             max="5"
             step="0.05"
-            value="2"
+            value="1"
           />
         </div>
         <div>
