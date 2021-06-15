@@ -1,15 +1,14 @@
-"use strict";
+//"use strict";
 
 // globals
-const width = window.innerWidth;
-const height = window.innerHeight;
-const agent_count = 2000;
+const width = 500;
+const height = 500;
+const agent_count = 200;
 let trail = new Float32Array(width * height);
 
 // config
 const settings = {
   AGENT_SPEED: 2,
-  regenerate_agents: true,
   DIFFUSSION_WEIGHTS: [
     1 / 9,
     1 / 9,
@@ -23,6 +22,17 @@ const settings = {
   ],
   DEPOSIT_AMOUNT: 10,
   DECAY_FACTOR: 0.9,
+};
+
+// actions
+const actions = {
+  agentGeneration: true,
+  agentMovement: false,
+  agentRotation: false,
+  trail: false,
+  deposit: false,
+  diffuse: false,
+  decay: false,
 };
 
 //helpers
@@ -53,7 +63,7 @@ onload = function () {
         angle: Math.random() * 2 * Math.PI,
       });
     }
-    settings.regenerate_agents = false;
+    actions.agentGeneration = false;
   }
 
   function move_agents() {
@@ -80,18 +90,20 @@ onload = function () {
     const old_trail = Float32Array.from(trail);
     for (let y = 0; y < height; ++y) {
       for (let x = 0; x <= width; ++x) {
-        const diffused_value =
-          old_trail[index(x - 1, y - 1)] * settings.DIFFUSSION_WEIGHTS[0] +
-          old_trail[index(x, y - 1)] * settings.DIFFUSSION_WEIGHTS[1] +
-          old_trail[index(x + 1, y - 1)] * settings.DIFFUSSION_WEIGHTS[2] +
-          old_trail[index(x - 1, y)] * settings.DIFFUSSION_WEIGHTS[3] +
-          old_trail[index(x, y)] * settings.DIFFUSSION_WEIGHTS[4] +
-          old_trail[index(x + 1, y)] * settings.DIFFUSSION_WEIGHTS[5] +
-          old_trail[index(x - 1, y + 1)] * settings.DIFFUSSION_WEIGHTS[6] +
-          old_trail[index(x, y + 1)] * settings.DIFFUSSION_WEIGHTS[7] +
-          old_trail[index(x + 1, y + 1)] * settings.DIFFUSSION_WEIGHTS[8];
+        const diffused_value = actions.diffuse
+          ? old_trail[index(x - 1, y - 1)] * settings.DIFFUSSION_WEIGHTS[0] +
+            old_trail[index(x, y - 1)] * settings.DIFFUSSION_WEIGHTS[1] +
+            old_trail[index(x + 1, y - 1)] * settings.DIFFUSSION_WEIGHTS[2] +
+            old_trail[index(x - 1, y)] * settings.DIFFUSSION_WEIGHTS[3] +
+            old_trail[index(x, y)] * settings.DIFFUSSION_WEIGHTS[4] +
+            old_trail[index(x + 1, y)] * settings.DIFFUSSION_WEIGHTS[5] +
+            old_trail[index(x - 1, y + 1)] * settings.DIFFUSSION_WEIGHTS[6] +
+            old_trail[index(x, y + 1)] * settings.DIFFUSSION_WEIGHTS[7] +
+            old_trail[index(x + 1, y + 1)] * settings.DIFFUSSION_WEIGHTS[8]
+          : old_trail[index(x, y)];
 
-        trail[index(x, y)] = diffused_value * settings.DECAY_FACTOR;
+        trail[index(x, y)] =
+          diffused_value * (actions.decay ? settings.DECAY_FACTOR : 1);
       }
     }
   }
@@ -129,11 +141,9 @@ onload = function () {
   }
 
   function next_frame() {
-    if (settings.regenerate_agents) {
-      generate_agents();
-    }
-    move_agents();
-    deposit();
+    actions.agentGeneration && generate_agents();
+    actions.agentMovement && move_agents();
+    actions.deposit && deposit();
     diffuse_and_decay();
     render(canvas, agents);
 
