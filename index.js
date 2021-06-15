@@ -19,6 +19,7 @@ const settings = {
     1 / 9,
     1 / 9,
   ],
+  // DIFFUSSION_WEIGHTS: [0.05, 0.1, 0.05, 0.1, 0.4, 0.1, 0.05, 0.1, 0.05],
   DEPOSIT_AMOUNT: 10,
   DECAY_FACTOR: 0.9,
   AGENT_COUNT: 200,
