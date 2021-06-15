@@ -1,11 +1,43 @@
-div.main {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  border: none;
+:root {
+  --primary: #52db8b;
+  --secondary: #5ea6e0;
+  --body: #414141;
 }
+
 body {
+  width: 100vw;
+  height: 100vh;
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--body);
+  flex-direction: column;
+  font-family: Lato;
+}
+
+.header {
+  background: var(--secondary);
+  width: 100%;
+}
+
+h1 {
+  justify-self: flex-start;
+}
+
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex: 1;
+}
+
+canvas {
+  max-width: calc(100vw - 20px);
+  border: 10px solid var(--primary);
+  border-radius: 10px;
+  align-self: center;
+  justify-self: center;
 }
