@@ -34,10 +34,16 @@ h1 {
   flex: 1;
 }
 
+.settings {
+  margin-right: 15px;
+}
+
+.settings input {
+  margin-top: 10px;
+}
+
 canvas {
   max-width: calc(100vw - 20px);
   border: 10px solid var(--primary);
   border-radius: 10px;
-  align-self: center;
-  justify-self: center;
 }
