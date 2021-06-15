@@ -3,7 +3,6 @@
 // globals
 const width = 500;
 const height = 500;
-const agent_count = 200;
 let trail = new Float32Array(width * height);
 
 // config
@@ -22,6 +21,7 @@ const settings = {
   ],
   DEPOSIT_AMOUNT: 10,
   DECAY_FACTOR: 0.9,
+  AGENT_COUNT: 200,
 };
 
 // actions
@@ -29,7 +29,6 @@ const actions = {
   agentGeneration: true,
   agentMovement: false,
   agentRotation: false,
-  trail: false,
   deposit: false,
   diffuse: false,
   decay: false,
@@ -56,7 +55,7 @@ onload = function () {
   function generate_agents() {
     // erases all agents, generates new random ones
     agents.splice(0, agents.length);
-    for (let n = 0; n < agent_count; ++n) {
+    for (let n = 0; n < settings.AGENT_COUNT; ++n) {
       agents.push({
         x: Math.random() * width,
         y: Math.random() * height,
@@ -150,4 +149,24 @@ onload = function () {
     window.requestAnimationFrame(next_frame);
   }
   next_frame();
+  checkActions();
+  checkSettings();
 };
+
+function checkActions() {
+  for (let name in actions) {
+    console.log(settings, actions);
+    let checkBox = document.getElementById(name);
+    if (!checkBox) continue;
+    actions[name] = checkBox.checked;
+  }
+}
+
+function checkSettings() {
+  console.log(settings, actions);
+  for (let name in settings) {
+    let slider = document.getElementById(name);
+    if (!slider) continue;
+    settings[name] = parseFloat(slider.value);
+  }
+}
