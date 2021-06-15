@@ -8,21 +8,36 @@ let trail = new Float32Array(width * height);
 // config
 const settings = {
   AGENT_SPEED: 2,
+  // DIFFUSSION_WEIGHTS: [
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  // ],
   DIFFUSSION_WEIGHTS: [
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
+    1 / 16,
+    1 / 8,
+    1 / 16,
+    1 / 8,
+    1 / 4,
+    1 / 8,
+    1 / 16,
+    1 / 8,
+    1 / 16,
   ],
   // DIFFUSSION_WEIGHTS: [0.05, 0.1, 0.05, 0.1, 0.4, 0.1, 0.05, 0.1, 0.05],
   DEPOSIT_AMOUNT: 10,
   DECAY_FACTOR: 0.9,
-  AGENT_COUNT: 200,
+  AGENT_COUNT: 2,
+  SENSOR_ANGLE: (80 / 180) * Math.PI,
+  TURNING_ANGLE: (80 / 180) * Math.PI,
+  SENSOR_DISTANCE: 10,
+  TURNING_STRENGTH: 1,
 };
 
 // actions
@@ -64,6 +79,42 @@ onload = function () {
       });
     }
     actions.agentGeneration = false;
+  }
+
+  function get_sensed_value(agent, angle) {
+    return trail[
+      index(
+        Math.round(
+          agent.x + Math.sin(agent.angle + angle) * settings.SENSOR_DISTANCE
+        ),
+        Math.round(
+          agent.y + Math.cos(agent.angle + angle) * settings.SENSOR_DISTANCE
+        )
+      )
+    ];
+  }
+
+  function sense() {
+    for (let agent of agents) {
+      const sensor = [
+        get_sensed_value(agent, settings.SENSOR_ANGLE),
+        get_sensed_value(agent, 0),
+        get_sensed_value(agent, -settings.SENSOR_ANGLE),
+      ];
+
+      const i = sensor.indexOf(Math.max(...sensor)) - 1;
+
+      if (i === 0) {
+      } else if (sensor[0] > sensor[2]) {
+        agent.angle += settings.SENSOR_ANGLE;
+      } else {
+        agent.angle -= settings.SENSOR_ANGLE;
+      }
+
+      //   console.log(sensor);
+
+      agent.angle += i * settings.TURNING_STRENGTH;
+    }
   }
 
   function move_agents() {
@@ -142,6 +193,7 @@ onload = function () {
 
   function next_frame() {
     actions.agentGeneration && generate_agents();
+    actions.agentRotation && sense();
     actions.agentMovement && move_agents();
     actions.deposit && deposit();
     diffuse_and_decay();
@@ -168,6 +220,11 @@ function checkSettings() {
   for (let name in settings) {
     let slider = document.getElementById(name);
     if (!slider) continue;
-    settings[name] = parseFloat(slider.value);
+
+    if (name.includes("ANGLE")) {
+      settings[name] = (parseFloat(slider.value) / 180) * Math.PI;
+    } else {
+      settings[name] = parseFloat(slider.value);
+    }
   }
 }
