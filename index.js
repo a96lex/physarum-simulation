@@ -40,6 +40,11 @@ const settings = {
   TURNING_STRENGTH: 1,
 };
 
+const colors = {
+  background: [34, 35, 35],
+  agents: [240, 235, 240],
+};
+
 // actions
 const actions = {
   agentGeneration: true,
@@ -166,12 +171,20 @@ onload = function () {
     let i = 0;
     for (let y = 0; y < height; ++y) {
       for (let x = 0; x < width; ++x) {
-        const value = trail[i];
-        const brightness = Math.floor(value * 255);
-        trail_image.data[i * 4 + 0] = brightness;
-        trail_image.data[i * 4 + 1] = brightness;
-        trail_image.data[i * 4 + 2] = brightness;
-        trail_image.data[i * 4 + 3] = 255;
+        const colorIntensity = trail[i];
+        trail_image.data[i * 4 + 0] = Math.max(
+          colors.background[0],
+          Math.floor(colorIntensity * colors.agents[0])
+        );
+        trail_image.data[i * 4 + 1] = Math.max(
+          colors.background[1],
+          Math.floor(colorIntensity * colors.agents[1])
+        );
+        trail_image.data[i * 4 + 2] = Math.max(
+          colors.background[2],
+          Math.floor(colorIntensity * colors.agents[2])
+        );
+        trail_image.data[i * 4 + 3] = 255; // opacity
         i++;
       }
     }
@@ -179,13 +192,13 @@ onload = function () {
     for (let agent of agents) {
       trail_image.data[
         (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 0
-      ] = 255;
+      ] = colors.agents[0];
       trail_image.data[
         (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 1
-      ] = 255;
+      ] = colors.agents[1];
       trail_image.data[
         (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 2
-      ] = 255;
+      ] = colors.agents[2];
     }
 
     ctx.putImageData(trail_image, 0, 0);
