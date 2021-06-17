@@ -1,7 +1,8 @@
 :root {
   --primary: #52db8b;
   --secondary: #5ea6e0;
-  --body: #414141;
+  --body: #222323;
+  --bg: #f0f6f0;
 }
 
 body {
@@ -14,12 +15,14 @@ body {
   align-items: center;
   justify-content: space-between;
   color: var(--body);
+  background: var(--bg);
   flex-direction: column;
   font-family: Lato;
 }
 
 .header {
-  background: var(--secondary);
+  background: var(--body);
+  color: var(--bg);
   width: 100%;
 }
 
@@ -44,6 +47,5 @@ h1 {
 
 canvas {
   max-width: calc(100vw - 20px);
-  border: 10px solid var(--primary);
   border-radius: 10px;
 }
