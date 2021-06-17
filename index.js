@@ -1,8 +1,8 @@
 //"use strict";
 
 // globals
-const width = 500;
-const height = 500;
+const width = 900;
+const height = 700;
 let trail = new Float32Array(width * height);
 
 // config
@@ -33,7 +33,7 @@ const settings = {
   // DIFFUSSION_WEIGHTS: [0.05, 0.1, 0.05, 0.1, 0.4, 0.1, 0.05, 0.1, 0.05],
   DEPOSIT_AMOUNT: 10,
   DECAY_FACTOR: 0.9,
-  AGENT_COUNT: 2,
+  AGENT_COUNT: 0,
   SENSOR_ANGLE: (80 / 180) * Math.PI,
   TURNING_ANGLE: (80 / 180) * Math.PI,
   SENSOR_DISTANCE: 10,
@@ -101,24 +101,22 @@ onload = function () {
 
   function sense() {
     for (let agent of agents) {
-      const sensor = [
-        get_sensed_value(agent, settings.SENSOR_ANGLE),
-        get_sensed_value(agent, 0),
-        get_sensed_value(agent, -settings.SENSOR_ANGLE),
-      ];
+      const senseLeft = get_sensed_value(agent, settings.SENSOR_ANGLE);
+      const senseCenter = get_sensed_value(agent, 0);
+      const senseRight = get_sensed_value(agent, -settings.SENSOR_ANGLE);
 
-      const i = sensor.indexOf(Math.max(...sensor)) - 1;
+      const randomTurning = Math.random();
+      console.log(randomTurning);
 
-      if (i === 0) {
-      } else if (sensor[0] > sensor[2]) {
+      if (senseCenter > senseRight && senseCenter > senseLeft) {
+        agent.angle += 0;
+      } else if (senseCenter < senseRight && senseCenter < senseLeft) {
+        agent.angle += (randomTurning - 0.5) * 2 * settings.SENSOR_ANGLE;
+      } else if (senseLeft > senseRight) {
         agent.angle += settings.SENSOR_ANGLE;
       } else {
-        agent.angle -= settings.SENSOR_ANGLE;
+        agent.angle -= randomTurning * settings.SENSOR_ANGLE;
       }
-
-      //   console.log(sensor);
-
-      agent.angle += i * settings.TURNING_STRENGTH;
     }
   }
 
