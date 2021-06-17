@@ -221,7 +221,6 @@ onload = function () {
 
 function checkActions() {
   for (let name in actions) {
-    console.log(settings, actions);
     let checkBox = document.getElementById(name);
     if (!checkBox) continue;
     actions[name] = checkBox.checked;
@@ -229,7 +228,6 @@ function checkActions() {
 }
 
 function checkSettings() {
-  console.log(settings, actions);
   for (let name in settings) {
     let slider = document.getElementById(name);
     if (!slider) continue;
