@@ -1,8 +1,16 @@
 :root {
-  --primary: #52db8b;
-  --secondary: #5ea6e0;
-  --body: #222323;
-  --bg: #f0f6f0;
+  --primary: rgb(255, 159, 178);
+  --secondary: rgb(85, 85, 85);
+  --body: rgb(4, 40, 66);
+  --bg: rgb(222, 222, 224);
+}
+
+button {
+  border: none;
+  border-radius: 5px;
+  background: var(--body);
+  color: var(--bg);
+  padding: 5px;
 }
 
 body {
@@ -27,10 +35,11 @@ body {
   height: 120px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-evenly;
 }
+
 .header * {
-  margin: 0 50px;
+  margin: 0px 50px;
 }
 
 h1 {
@@ -61,6 +70,18 @@ h1 {
   }
 }
 
+.settings-container {
+  background: var(--primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 660px;
+  width: 300px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
 .settings {
   margin-right: 15px;
 }
@@ -69,7 +90,76 @@ h1 {
   margin-top: 10px;
 }
 
+.settings div {
+  display: flex;
+  justify-content: space-between;
+}
+
 canvas {
   max-width: calc(100vw - 20px);
   border-radius: 10px;
+  margin-left: 50px;
+}
+
+h3 {
+  margin-top: 40px;
+}
+
+/*Chrome*/
+input[type="range"] {
+  overflow: hidden;
+  width: 80px;
+  -webkit-appearance: none;
+  background-color: var(--bg);
+  border-radius: 10px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  width: 15px;
+  -webkit-appearance: none;
+  height: 15px;
+  cursor: ew-resize;
+  background: var(--body);
+  border-radius: 10px;
+}
+
+/* checkbox magic */
+input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  z-index: -9999;
+}
+input[type="checkbox"] + label {
+  position: relative;
+  padding-left: 24px;
+}
+input[type="checkbox"] + label .indicator {
+  position: absolute;
+  left: -4px;
+  display: block;
+  width: 18px;
+  height: 18px;
+  background: var(--bg);
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+}
+input[type="checkbox"]:checked + label .indicator {
+  background: var(--body);
+}
+
+input[type="checkbox"]:checked + label .indicator::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 10px;
+  border: 3px solid var(--bg);
+  border-left: none;
+  border-top: none;
+  transform: rotate(45deg);
+  left: 5px;
+}
+
+.global div {
+  margin: 8px 0;
 }
