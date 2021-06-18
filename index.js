@@ -53,6 +53,7 @@ const actions = {
   deposit: false,
   diffuse: false,
   decay: false,
+  showAgents: true,
 };
 
 //helpers
@@ -187,18 +188,19 @@ onload = function () {
       }
     }
 
-    for (let agent of agents) {
-      trail_image.data[
-        (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 0
-      ] = colors.agents[0];
-      trail_image.data[
-        (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 1
-      ] = colors.agents[1];
-      trail_image.data[
-        (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 2
-      ] = colors.agents[2];
+    if (actions.showAgents) {
+      for (let agent of agents) {
+        trail_image.data[
+          (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 0
+        ] = colors.agents[0];
+        trail_image.data[
+          (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 1
+        ] = colors.agents[1];
+        trail_image.data[
+          (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 2
+        ] = colors.agents[2];
+      }
     }
-
     ctx.putImageData(trail_image, 0, 0);
   }
 
