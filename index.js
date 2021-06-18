@@ -31,7 +31,7 @@ const settings = {
     1 / 16,
   ],
   // DIFFUSSION_WEIGHTS: [0.05, 0.1, 0.05, 0.1, 0.4, 0.1, 0.05, 0.1, 0.05],
-  DEPOSIT_AMOUNT: 10,
+  DEPOSIT_AMOUNT: 0.1,
   DECAY_FACTOR: 0.9,
   AGENT_COUNT: 0,
   SENSOR_ANGLE: (80 / 180) * Math.PI,
@@ -41,8 +41,8 @@ const settings = {
 };
 
 const colors = {
-  background: [34, 35, 35],
-  agents: [240, 235, 240],
+  background: [4, 40, 66],
+  agents: [255, 159, 178],
 };
 
 // actions
@@ -107,7 +107,6 @@ onload = function () {
       const senseRight = get_sensed_value(agent, -settings.SENSOR_ANGLE);
 
       const randomTurning = Math.random();
-      console.log(randomTurning);
 
       if (senseCenter > senseRight && senseCenter > senseLeft) {
         agent.angle += 0;
@@ -137,7 +136,10 @@ onload = function () {
     for (let agent of agents) {
       const x = Math.round(agent.x);
       const y = Math.round(agent.y);
-      trail[index(x, y)] += settings.DEPOSIT_AMOUNT;
+      trail[index(x, y)] = Math.min(
+        5,
+        trail[index(x, y)] + settings.DEPOSIT_AMOUNT
+      );
     }
   }
 
@@ -218,6 +220,10 @@ onload = function () {
   checkActions();
   checkSettings();
 };
+
+function restartAgents() {
+  actions.agentGeneration = true;
+}
 
 function checkActions() {
   for (let name in actions) {
