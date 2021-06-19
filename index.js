@@ -1,28 +1,59 @@
-"use strict";
+//"use strict";
 
 // globals
-const width = window.innerWidth;
-const height = window.innerHeight;
-const agent_count = 2000;
+const width = 900;
+const height = 700;
 let trail = new Float32Array(width * height);
 
 // config
 const settings = {
   AGENT_SPEED: 2,
-  regenerate_agents: true,
+  // DIFFUSSION_WEIGHTS: [
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  //   1 / 9,
+  // ],
   DIFFUSSION_WEIGHTS: [
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
-    1 / 9,
+    1 / 16,
+    1 / 8,
+    1 / 16,
+    1 / 8,
+    1 / 4,
+    1 / 8,
+    1 / 16,
+    1 / 8,
+    1 / 16,
   ],
-  DEPOSIT_AMOUNT: 10,
+  // DIFFUSSION_WEIGHTS: [0.05, 0.1, 0.05, 0.1, 0.4, 0.1, 0.05, 0.1, 0.05],
+  DEPOSIT_AMOUNT: 0.1,
   DECAY_FACTOR: 0.9,
+  AGENT_COUNT: 0,
+  SENSOR_ANGLE: (80 / 180) * Math.PI,
+  TURNING_ANGLE: (80 / 180) * Math.PI,
+  SENSOR_DISTANCE: 10,
+  TURNING_STRENGTH: 1,
+};
+
+const colors = {
+  background: [4, 40, 66],
+  agents: [255, 159, 178],
+};
+
+// actions
+const actions = {
+  agentGeneration: true,
+  agentMovement: false,
+  agentRotation: false,
+  deposit: false,
+  diffuse: false,
+  decay: false,
+  showAgents: true,
 };
 
 //helpers
@@ -46,14 +77,47 @@ onload = function () {
   function generate_agents() {
     // erases all agents, generates new random ones
     agents.splice(0, agents.length);
-    for (let n = 0; n < agent_count; ++n) {
+    for (let n = 0; n < settings.AGENT_COUNT; ++n) {
       agents.push({
         x: Math.random() * width,
         y: Math.random() * height,
         angle: Math.random() * 2 * Math.PI,
       });
     }
-    settings.regenerate_agents = false;
+    actions.agentGeneration = false;
+  }
+
+  function get_sensed_value(agent, angle) {
+    return trail[
+      index(
+        Math.round(
+          agent.x + Math.sin(agent.angle + angle) * settings.SENSOR_DISTANCE
+        ),
+        Math.round(
+          agent.y + Math.cos(agent.angle + angle) * settings.SENSOR_DISTANCE
+        )
+      )
+    ];
+  }
+
+  function sense() {
+    for (let agent of agents) {
+      const senseLeft = get_sensed_value(agent, settings.SENSOR_ANGLE);
+      const senseCenter = get_sensed_value(agent, 0);
+      const senseRight = get_sensed_value(agent, -settings.SENSOR_ANGLE);
+
+      const randomTurning = Math.random();
+
+      if (senseCenter > senseRight && senseCenter > senseLeft) {
+        agent.angle += 0;
+      } else if (senseCenter < senseRight && senseCenter < senseLeft) {
+        agent.angle += (randomTurning - 0.5) * 2 * settings.SENSOR_ANGLE;
+      } else if (senseLeft > senseRight) {
+        agent.angle += settings.SENSOR_ANGLE;
+      } else {
+        agent.angle -= randomTurning * settings.SENSOR_ANGLE;
+      }
+    }
   }
 
   function move_agents() {
@@ -72,7 +136,10 @@ onload = function () {
     for (let agent of agents) {
       const x = Math.round(agent.x);
       const y = Math.round(agent.y);
-      trail[index(x, y)] += settings.DEPOSIT_AMOUNT;
+      trail[index(x, y)] = Math.min(
+        5,
+        trail[index(x, y)] + settings.DEPOSIT_AMOUNT
+      );
     }
   }
 
@@ -80,18 +147,20 @@ onload = function () {
     const old_trail = Float32Array.from(trail);
     for (let y = 0; y < height; ++y) {
       for (let x = 0; x <= width; ++x) {
-        const diffused_value =
-          old_trail[index(x - 1, y - 1)] * settings.DIFFUSSION_WEIGHTS[0] +
-          old_trail[index(x, y - 1)] * settings.DIFFUSSION_WEIGHTS[1] +
-          old_trail[index(x + 1, y - 1)] * settings.DIFFUSSION_WEIGHTS[2] +
-          old_trail[index(x - 1, y)] * settings.DIFFUSSION_WEIGHTS[3] +
-          old_trail[index(x, y)] * settings.DIFFUSSION_WEIGHTS[4] +
-          old_trail[index(x + 1, y)] * settings.DIFFUSSION_WEIGHTS[5] +
-          old_trail[index(x - 1, y + 1)] * settings.DIFFUSSION_WEIGHTS[6] +
-          old_trail[index(x, y + 1)] * settings.DIFFUSSION_WEIGHTS[7] +
-          old_trail[index(x + 1, y + 1)] * settings.DIFFUSSION_WEIGHTS[8];
+        const diffused_value = actions.diffuse
+          ? old_trail[index(x - 1, y - 1)] * settings.DIFFUSSION_WEIGHTS[0] +
+            old_trail[index(x, y - 1)] * settings.DIFFUSSION_WEIGHTS[1] +
+            old_trail[index(x + 1, y - 1)] * settings.DIFFUSSION_WEIGHTS[2] +
+            old_trail[index(x - 1, y)] * settings.DIFFUSSION_WEIGHTS[3] +
+            old_trail[index(x, y)] * settings.DIFFUSSION_WEIGHTS[4] +
+            old_trail[index(x + 1, y)] * settings.DIFFUSSION_WEIGHTS[5] +
+            old_trail[index(x - 1, y + 1)] * settings.DIFFUSSION_WEIGHTS[6] +
+            old_trail[index(x, y + 1)] * settings.DIFFUSSION_WEIGHTS[7] +
+            old_trail[index(x + 1, y + 1)] * settings.DIFFUSSION_WEIGHTS[8]
+          : old_trail[index(x, y)];
 
-        trail[index(x, y)] = diffused_value * settings.DECAY_FACTOR;
+        trail[index(x, y)] =
+          diffused_value * (actions.decay ? settings.DECAY_FACTOR : 1);
       }
     }
   }
@@ -103,41 +172,76 @@ onload = function () {
     let i = 0;
     for (let y = 0; y < height; ++y) {
       for (let x = 0; x < width; ++x) {
-        const value = trail[i];
-        const brightness = Math.floor(value * 255);
-        trail_image.data[i * 4 + 0] = brightness;
-        trail_image.data[i * 4 + 1] = brightness;
-        trail_image.data[i * 4 + 2] = brightness;
-        trail_image.data[i * 4 + 3] = 255;
+        const colorIntensity = trail[i];
+        trail_image.data[i * 4 + 0] = Math.max(
+          colors.background[0],
+          Math.floor(colorIntensity * colors.agents[0])
+        );
+        trail_image.data[i * 4 + 1] = Math.max(
+          colors.background[1],
+          Math.floor(colorIntensity * colors.agents[1])
+        );
+        trail_image.data[i * 4 + 2] = Math.max(
+          colors.background[2],
+          Math.floor(colorIntensity * colors.agents[2])
+        );
+        trail_image.data[i * 4 + 3] = 255; // opacity
         i++;
       }
     }
 
-    for (let agent of agents) {
-      trail_image.data[
-        (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 0
-      ] = 255;
-      trail_image.data[
-        (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 1
-      ] = 255;
-      trail_image.data[
-        (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 2
-      ] = 255;
+    if (actions.showAgents) {
+      for (let agent of agents) {
+        trail_image.data[
+          (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 0
+        ] = colors.agents[0];
+        trail_image.data[
+          (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 1
+        ] = colors.agents[1];
+        trail_image.data[
+          (Math.floor(agent.x) + Math.floor(agent.y) * width) * 4 + 2
+        ] = colors.agents[2];
+      }
     }
-
     ctx.putImageData(trail_image, 0, 0);
   }
 
   function next_frame() {
-    if (settings.regenerate_agents) {
-      generate_agents();
-    }
-    move_agents();
-    deposit();
+    actions.agentGeneration && generate_agents();
+    actions.agentRotation && sense();
+    actions.agentMovement && move_agents();
+    actions.deposit && deposit();
     diffuse_and_decay();
     render(canvas, agents);
 
     window.requestAnimationFrame(next_frame);
   }
   next_frame();
+  checkActions();
+  checkSettings();
 };
+
+function restartAgents() {
+  actions.agentGeneration = true;
+}
+
+function checkActions() {
+  for (let name in actions) {
+    let checkBox = document.getElementById(name);
+    if (!checkBox) continue;
+    actions[name] = checkBox.checked;
+  }
+}
+
+function checkSettings() {
+  for (let name in settings) {
+    let slider = document.getElementById(name);
+    if (!slider) continue;
+
+    if (name.includes("ANGLE")) {
+      settings[name] = (parseFloat(slider.value) / 180) * Math.PI;
+    } else {
+      settings[name] = parseFloat(slider.value);
+    }
+  }
+}
