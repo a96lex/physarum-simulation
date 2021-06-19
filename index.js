@@ -1,7 +1,7 @@
 //"use strict";
 
 // globals
-const width = 900;
+const width = Math.min(900, window.innerWidth * 0.6);
 const height = 700;
 let trail = new Float32Array(width * height);
 
