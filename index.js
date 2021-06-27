@@ -243,5 +243,13 @@ function checkSettings() {
     } else {
       settings[name] = parseFloat(slider.value);
     }
+
+    let display = document.getElementById(`show_${name}`);
+    if (name.includes("ANGLE")) {
+      display.innerHTML = ((settings[name] * 180) / Math.PI).toFixed(2);
+    } else {
+      display.innerHTML = settings[name].toFixed(2);
+    }
+    if (!display) continue;
   }
 }
