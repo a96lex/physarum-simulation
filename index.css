@@ -133,6 +133,8 @@ h3 {
 input[type="range"] {
   overflow: hidden;
   width: 80px;
+  margin-top: 2px;
+  margin-bottom: 10px;
   -webkit-appearance: none;
   background-color: var(--bg);
   border-radius: 10px;
