@@ -76,6 +76,7 @@ onload = function () {
 
   function generate_agents() {
     // erases all agents, generates new random ones
+    trail = new Float32Array(width * height);
     agents.splice(0, agents.length);
     for (let n = 0; n < settings.AGENT_COUNT; ++n) {
       agents.push({
@@ -247,6 +248,8 @@ function checkSettings() {
     let display = document.getElementById(`show_${name}`);
     if (name.includes("ANGLE")) {
       display.innerHTML = ((settings[name] * 180) / Math.PI).toFixed(2);
+    } else if (name.includes("COUNT")) {
+      display.innerHTML = settings[name];
     } else {
       display.innerHTML = settings[name].toFixed(2);
     }
