@@ -238,7 +238,6 @@ function updateActions() {
   for (let name in actions) {
     let checkBox = document.getElementById(name);
     if (!checkBox) continue;
-    console.log(name, actions);
     checkBox.checked = actions[name];
   }
 }
