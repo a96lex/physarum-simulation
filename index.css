@@ -6,7 +6,7 @@
 }
 
 *:focus {
-  outline: none;
+  outline: 1px solid var(--body);
 }
 
 button {
@@ -117,6 +117,16 @@ h1 {
 .settings div {
   display: flex;
   justify-content: space-between;
+}
+
+.settings-sliders div {
+  display: grid;
+  grid-template-columns: 5fr 4fr 2fr;
+  text-align: left;
+}
+
+span {
+  text-align: right;
 }
 
 canvas {

@@ -81,7 +81,7 @@
           </div>
         </div>
         <div
-          class="settings"
+          class="settings settings-sliders"
           onclick="checkSettings()"
           onkeydown="checkSettings()"
         >
@@ -91,12 +91,12 @@
             <input
               id="AGENT_COUNT"
               type="range"
-              min="0"
+              min="5000"
               max="50000"
               step="1"
               value="0"
             />
-            <div id="show_AGENT_COUNT"></div>
+            <span id="show_AGENT_COUNT"></span>
           </div>
           <div>
             <label for="SENSOR_ANGLE">Sensor angle</label>
@@ -108,7 +108,7 @@
               step="1"
               value="30"
             />
-            <div id="show_SENSOR_ANGLE"></div>
+            <span id="show_SENSOR_ANGLE"></span>
           </div>
           <div>
             <label for="TURNING_ANGLE">Turning angle</label>
@@ -120,7 +120,7 @@
               step="1"
               value="60"
             />
-            <div id="show_TURNING_ANGLE"></div>
+            <span id="show_TURNING_ANGLE"></span>
           </div>
           <div>
             <label for="SENSOR_DISTANCE">Sensor distance</label>
@@ -128,11 +128,11 @@
               id="SENSOR_DISTANCE"
               type="range"
               min="0"
-              max="360"
+              max="40"
               step="1"
               value="30"
             />
-            <div id="show_SENSOR_DISTANCE"></div>
+            <span id="show_SENSOR_DISTANCE"></span>
           </div>
           <div>
             <label for="AGENT_SPEED">Agent speed</label>
@@ -144,7 +144,7 @@
               step="0.05"
               value="1"
             />
-            <div id="show_AGENT_SPEED"></div>
+            <span id="show_AGENT_SPEED"></span>
           </div>
           <div>
             <label for="DEPOSIT_AMOUNT">Deposit amount</label>
@@ -152,11 +152,11 @@
               id="DEPOSIT_AMOUNT"
               type="range"
               min="0"
-              max="10"
-              step="0.1"
-              value="5"
+              max="1.1"
+              step="0.01"
+              value="0.9"
             />
-            <div id="show_DEPOSIT_AMOUNT"></div>
+            <span id="show_DEPOSIT_AMOUNT"></span>
           </div>
           <div>
             <label for="DECAY_FACTOR">Decay factor</label>
@@ -168,7 +168,7 @@
               step="0.01"
               value="0.97"
             />
-            <div id="show_DECAY_FACTOR"></div>
+            <span id="show_DECAY_FACTOR"></span>
           </div>
         </div>
       </div>
