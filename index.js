@@ -234,6 +234,15 @@ function checkActions() {
   }
 }
 
+function updateActions() {
+  for (let name in actions) {
+    let checkBox = document.getElementById(name);
+    if (!checkBox) continue;
+    console.log(name, actions);
+    checkBox.checked = actions[name];
+  }
+}
+
 function checkSettings() {
   for (let name in settings) {
     let slider = document.getElementById(name);
@@ -247,11 +256,11 @@ function checkSettings() {
 
     let display = document.getElementById(`show_${name}`);
     if (name.includes("ANGLE")) {
-      display.innerHTML = Math.floor((settings[name] * 180) / Math.PI);
+      display.innerHTML = ((settings[name] * 180) / Math.PI).toFixed(0);
     } else if (name.includes("COUNT") || name.includes("DISTANCE")) {
       display.innerHTML = Math.floor(settings[name]);
     } else {
-      display.innerHTML = settings[name].toFixed(2);
+      display.innerHTML = settings[name];
     }
     if (!display) continue;
   }
@@ -267,7 +276,36 @@ function fullScreen(full) {
 }
 
 document.addEventListener("keydown", function (event) {
-  event.code === "Escape" && fullScreen(false);
-  event.code === "KeyF" && fullScreen(true);
-  event.code === "KeyR" && restartAgents(true);
+  switch (event.code) {
+    case "Escape":
+      fullScreen(false);
+      break;
+    case "KeyF":
+      fullScreen(true);
+      break;
+    case "KeyR":
+      restartAgents(true);
+      break;
+    case "Digit1":
+      actions.agentMovement = !actions.agentMovement;
+      break;
+    case "Digit2":
+      actions.deposit = !actions.deposit;
+      break;
+    case "Digit3":
+      actions.decay = !actions.decay;
+      break;
+    case "Digit4":
+      actions.diffuse = !actions.diffuse;
+      break;
+    case "Digit5":
+      actions.agentRotation = !actions.agentRotation;
+      break;
+    case "Digit6":
+      actions.showAgents = !actions.showAgents;
+      break;
+    default:
+      break;
+  }
+  updateActions();
 });
