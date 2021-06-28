@@ -1,8 +1,8 @@
 //"use strict";
 
 // globals
-const width = Math.min(900, window.innerWidth * 0.6);
-const height = 700;
+let width = Math.min(900, window.innerWidth * 0.6);
+let height = 700;
 let trail = new Float32Array(width * height);
 
 // config
@@ -247,12 +247,27 @@ function checkSettings() {
 
     let display = document.getElementById(`show_${name}`);
     if (name.includes("ANGLE")) {
-      display.innerHTML = ((settings[name] * 180) / Math.PI).toFixed(2);
-    } else if (name.includes("COUNT")) {
-      display.innerHTML = settings[name];
+      display.innerHTML = Math.floor((settings[name] * 180) / Math.PI);
+    } else if (name.includes("COUNT") || name.includes("DISTANCE")) {
+      display.innerHTML = Math.floor(settings[name]);
     } else {
       display.innerHTML = settings[name].toFixed(2);
     }
     if (!display) continue;
   }
 }
+
+function fullScreen(full) {
+  let canvas = document.getElementById("simcanvas");
+
+  full
+    ? canvas.classList.add("fullscreen")
+    : canvas.classList.remove("fullscreen");
+  !full ? canvas.classList.add("render") : canvas.classList.remove("render");
+}
+
+document.addEventListener("keydown", function (event) {
+  event.code === "Escape" && fullScreen(false);
+  event.code === "KeyF" && fullScreen(true);
+  event.code === "KeyR" && restartAgents(true);
+});
